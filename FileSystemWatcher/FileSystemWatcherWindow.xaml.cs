@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace FileSystemWatcher
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для FileSystemWatcherWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class FileSystemWatcherWindow : Window
     {
-        public MainWindow()
+        public FileSystemWatcherWindow()
         {
             InitializeComponent();
         }
