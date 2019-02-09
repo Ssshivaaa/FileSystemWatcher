@@ -49,7 +49,7 @@ namespace FileSystemWatcher
         {
             if(_fileSystemWatcher == null)
             {
-                _fileSystemWatcher = new FSWatcher(tbSelectedPath.Text, new WPFGridWatcherLoggingService(Events), new DialogErrorLoggingService());
+                _fileSystemWatcher = new FSWatcher(tbSelectedPath.Text, new ObservableCollectionWatcherLoggingService(Events), new DialogErrorLoggingService());
             }
             else
             {

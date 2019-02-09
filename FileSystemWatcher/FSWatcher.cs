@@ -34,13 +34,7 @@ namespace FileSystemWatcher
 
                 fileSystemWatcher.NotifyFilter =
                     NotifyFilters.Attributes |
-                    NotifyFilters.CreationTime |
-                    NotifyFilters.DirectoryName |
-                    NotifyFilters.FileName |
-                    NotifyFilters.LastAccess |
-                    NotifyFilters.LastWrite |
-                    NotifyFilters.Security |
-                    NotifyFilters.Size;              
+                    NotifyFilters.DirectoryName;             
 
                 fileSystemWatcher.Changed += FileSystemWatcher_Changed;
                 fileSystemWatcher.Created += FileSystemWatcher_Created;
@@ -106,7 +100,7 @@ namespace FileSystemWatcher
 
         private async void FileSystemWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
         {
-            var eventInfo = $"Changed {e.Name} at path {e.FullPath}";
+            var eventInfo = $"Attributes changed for {e.Name} at path {e.FullPath}";
             var model = new FSWModel
             {
                 Event = e.ChangeType,

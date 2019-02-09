@@ -8,13 +8,13 @@ using System.Windows.Threading;
 
 namespace FileSystemWatcher.Services
 {
-    internal class WPFGridWatcherLoggingService : IWatcherLoggingService
+    internal class ObservableCollectionWatcherLoggingService : IWatcherLoggingService
     {
-        private ObservableCollection<FSWModel> _gridSource;
+        private ObservableCollection<FSWModel> _observableCollection;
 
-        public WPFGridWatcherLoggingService(ObservableCollection<FSWModel> gridSource)
+        public ObservableCollectionWatcherLoggingService(ObservableCollection<FSWModel> observableCollection)
         {
-            _gridSource = gridSource;
+            _observableCollection = observableCollection;
         }
 
         public Task Log(FSWModel fswModel)
@@ -22,7 +22,7 @@ namespace FileSystemWatcher.Services
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
             new Action(() => 
             {
-                _gridSource.Add(fswModel);
+                _observableCollection.Add(fswModel);
             }));
             
             return new Task(() => { });

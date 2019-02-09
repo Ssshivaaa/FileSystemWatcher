@@ -63,7 +63,7 @@
     <Compile Include="Interfaces\IErrorLoggingService.cs" />
     <Compile Include="Models\FSWModel.cs" />
     <Compile Include="Services\DialogErrorLoggingService.cs" />
-    <Compile Include="Services\WPFGridWatcherLoggingService.cs" />
+    <Compile Include="Services\ObservableCollectionWatcherLoggingService.cs" />
     <Page Include="FileSystemWatcherWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
