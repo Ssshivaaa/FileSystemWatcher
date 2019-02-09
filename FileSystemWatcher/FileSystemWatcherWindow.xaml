@@ -6,7 +6,32 @@
         xmlns:local="clr-namespace:FileSystemWatcher"
         mc:Ignorable="d"
         Title="File System Watcher" Height="450" Width="800">
+    
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="10" x:Name="tbSelectedPath" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid Margin="10" Grid.Row="1" HorizontalAlignment="Center" Width="400">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Content="Select a folder" x:Name="btnFolderSelect" Click="btnFolderSelect_Click"/>
+            <Button IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Content="Start" x:Name="btnStart" Click="btnStart_Click"/>
+            <Button IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Content="Stop" x:Name="btnStop" Click="btnStop_Click"/>
+        </Grid>
+        <DataGrid Margin="10" x:Name="dataGrid" Grid.Row="2" AutoGenerateColumns="False" CanUserResizeRows="True" CanUserReorderColumns="True" CanUserResizeColumns="True" ItemsSource="{Binding Events}" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Date and Time" Binding="{Binding Path=DateTime, 
+UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+                <DataGridTextColumn Header="Path" Binding="{Binding Path=Path,
+UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+                <DataGridTextColumn Header="Event" Binding="{Binding Path=Event, 
+UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
+                <DataGridTextColumn Header="Event Information" Binding="{Binding Path=EventInfo, 
+UpdateSourceTrigger=PropertyChanged}"  Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Margin="10" Content="Clear" Grid.Row="3" x:Name="btnClear" Click="btnClear_Click"/>
     </Grid>
 </Window>
