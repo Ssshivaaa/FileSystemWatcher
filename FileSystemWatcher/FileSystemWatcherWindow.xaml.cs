@@ -1,6 +1,8 @@
-﻿using FileSystemWatcher.Models;
+﻿using FileSystemWatcher.Interfaces;
+using FileSystemWatcher.Models;
 using FileSystemWatcher.Services;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -8,75 +10,102 @@ namespace FileSystemWatcher
 {
     public partial class FileSystemWatcherWindow : Window
     {
+        private readonly IErrorLoggingService _errorLoggingService; 
         private FSWatcher _fileSystemWatcher;
-        public ObservableCollection<FSWModel> Events { get; set; }
 
         public FileSystemWatcherWindow()
         {
             InitializeComponent();
-            Events = new ObservableCollection<FSWModel>();
             DataContext = this;
+            _errorLoggingService = new DialogErrorLoggingService();
+            Events = new ObservableCollection<FSWModel>();
         }
+
+        public ObservableCollection<FSWModel> Events { get; set; }
 
         private void btnFolderSelect_Click(object sender, RoutedEventArgs e)
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog()
+            Execute(() =>
             {
-                IsFolderPicker = true
-            })
-            {
-                var result = dialog.ShowDialog();
-
-                if (result != CommonFileDialogResult.Ok)
+                using (CommonOpenFileDialog dialog = new CommonOpenFileDialog()
                 {
-                    return;
-                }
-
-                string selectedFolder = dialog.FileName;
-              
-                if(!string.IsNullOrEmpty(selectedFolder) && tbSelectedPath.Text != selectedFolder)
+                    IsFolderPicker = true
+                })
                 {
-                    Events.Clear();
+                    var result = dialog.ShowDialog();
+
+                    if (result != CommonFileDialogResult.Ok)
+                    {
+                        return;
+                    }
+
+                    string selectedFolder = dialog.FileName;
+
+                    if (!string.IsNullOrEmpty(selectedFolder) && tbSelectedPath.Text != selectedFolder)
+                    {
+                        Events.Clear();
+                    }
+
+                    btnStart.IsEnabled = !string.IsNullOrEmpty(selectedFolder);
+
+                    tbSelectedPath.Text = selectedFolder;
                 }
-
-                btnStart.IsEnabled = !string.IsNullOrEmpty(selectedFolder);                
-
-                tbSelectedPath.Text = selectedFolder;
-            }
+            });       
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            if(_fileSystemWatcher == null)
+            Execute(() =>
             {
-                _fileSystemWatcher = new FSWatcher(tbSelectedPath.Text, new ObservableCollectionWatcherLoggingService(Events), new DialogErrorLoggingService());
-            }
-            else
-            {
-                _fileSystemWatcher.FolderPath = tbSelectedPath.Text;
-            }
+                if (_fileSystemWatcher == null)
+                {
+                    _fileSystemWatcher = new FSWatcher(tbSelectedPath.Text, new ObservableCollectionWatcherLoggingService(Events), _errorLoggingService);
+                }
+                else
+                {
+                    _fileSystemWatcher.FolderPath = tbSelectedPath.Text;
+                }
 
-            SwitchButtonsState();
+                SwitchButtonsState();
 
-            _fileSystemWatcher.Start();
+                _fileSystemWatcher.Start();
+            });         
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            SwitchButtonsState();
-            _fileSystemWatcher.Stop();
+            Execute(() =>
+            {
+                SwitchButtonsState();
+                _fileSystemWatcher.Stop();
+            });       
         }
 
         private void SwitchButtonsState()
         {
-            btnStop.IsEnabled = !btnStop.IsEnabled;
-            btnStart.IsEnabled = !btnStart.IsEnabled;
-            btnFolderSelect.IsEnabled = !btnFolderSelect.IsEnabled;
+            Execute(() =>
+            {
+                btnStop.IsEnabled = !btnStop.IsEnabled;
+                btnStart.IsEnabled = !btnStart.IsEnabled;
+                btnFolderSelect.IsEnabled = !btnFolderSelect.IsEnabled;
+            });        
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
-            Events.Clear();
+            Execute(()=> Events.Clear());
+        }
+
+        private void Execute(Action action)
+        {
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                _errorLoggingService.Log(ex.Message);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace FileSystemWatcher.Services
     {
         public void Log(string errorMessage)
         {
-            MessageBox.Show(errorMessage);
+            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }
